@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package helloworld;
+
+// The greeting service definition.
+// python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. snake.proto
+service Snake {
+  // Sends a greeting
+  rpc login (LoginRequest) returns (UserLoginResponse);
+  rpc GameStream (stream ActionRequest) returns (stream ActionResponse);
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Request Messsages
+//////////////////////////////////////////////////////////////////////////////
+
+// A request with just the user's credentials.
+message LoginRequest {
+    string user_id = 1;   //用户名
+    string user_pin = 2;  //登录密码
+}
+
+message ActionRequest {
+    string user_id = 1;       //用户名
+    string user_pin = 2;      //登录密码
+
+    enum RequestType {
+      GameDecision = 0;       //client决策
+      HeartBeat = 1;          //client心跳
+      StateReady = 2;         //client已准备
+    }
+
+    RequestType msg_type = 3; //命令类型
+
+    string game_info = 4;     //游戏信息
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Response Messsages
+//////////////////////////////////////////////////////////////////////////////
+message UserLoginResponse {
+    string user_id = 1;     //用户名
+    string user_pin = 2;    //密码
+    double init_score = 3; //玩家初始积分
+    bool success = 4;        //是否登录成功
+    string reason = 5;       //原因
+}
+
+message ActionResponse {
+  string user_id = 1;    //用户名
+  string user_pin = 2;  //密码
+
+  int32 user_pos = 3;     //玩家位置
+  int64 tp_number = 4;    //游戏总局数
+  int64 game_number = 5;  //玩家参与局数
+  double total_score = 6; //玩家总分
+  int64 table_round = 7;  //局内步数
+
+  enum RequestType {
+      GameDecision = 0;  //client决策
+      HeartBeat = 1;     //client心跳
+      StateReady = 2;    //client已准备
+      StateUpdate = 3;   //状态更新
+      RoundEnd = 4;      //单局游戏结束
+      GameEnd = 5;  //全部游戏结束
+    }
+
+  string game_info = 8;        //游戏信息
+  RequestType msg_type = 9;   //命令类型
+}

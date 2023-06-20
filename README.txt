@@ -1,0 +1,1 @@
+start_client_pc.sh为client启动示例代码，需要连接时，请更改start_client_pc.sh中的账号密码
